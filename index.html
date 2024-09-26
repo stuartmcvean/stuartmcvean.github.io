@@ -10,11 +10,15 @@
     <div class="container text-center">
       <div class="row">
         <div class="col mt-3">
+          <div class="p-3 mb-3 text-primary-emphasis bg-primary-subtle border border-primary-subtle rounded-3 fs-3" id="authorisationMessageContainer" style="display:none">
+            <span>Completed 3DS authorisation :)</span>
+            <div class="mt-3"><button type="button" class="btn btn-primary mb-4" onclick="clearMessage()">Clear message</button></div>
+          </div>
           <div class="mb-3">
             <label for="exampleInputSim" class="form-label fs-3">Enter simulator link</label>
             <input type="url" class="form-control" id="exampleInputSim" aria-describedby="simHelp" value="https://www.postoffice.co.uk/apps/travel/transactions/someid">
           </div>
-          <button type="submit" class="btn btn-primary mb-4">Update link</button>
+          <button type="button" class="btn btn-primary mb-4">Update link</button>
           <div class="fs-3 mb-4">
             <a href="https://www.postoffice.co.uk/apps/travel/transactions/someid" id="simulatorLinkId">Simulator test link</a>
           </div>
@@ -38,11 +42,22 @@
     <script type="text/javascript">
       const inputElement = document.getElementById("exampleInputSim");
       const result = document.getElementById("simulatorLinkId").href;
+      const params = new Proxy(new URLSearchParams(window.location.search), {
+        get: (searchParams, prop) => searchParams.get(prop),
+      });
+      if(params.status === "completed") {
+        document.getElementById("authorisationMessageContainer").style.display = 'block';
+      }
 
       inputElement.addEventListener("change", (event) => {
         console.log("running? " + event.target.value);
         document.getElementById("simulatorLinkId").href = `${event.target.value}`;
       });
+
+      function clearMessage() {
+        document.getElementById("authorisationMessageContainer").style.display = 'none';
+        window.history.pushState({}, document.title, window.location.pathname);
+      }
    </script>
   </body>
 </html>
